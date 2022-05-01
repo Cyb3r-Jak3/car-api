@@ -9,7 +9,7 @@ RUN pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requi
 
 FROM base
 
-COPY server /usr/src/app/app
+COPY app /usr/src/app/app
 
 WORKDIR /usr/src/app
 

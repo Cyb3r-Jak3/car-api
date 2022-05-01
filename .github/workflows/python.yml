@@ -1,0 +1,48 @@
+name: Python Lint + Deploy
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "app/**"
+      - ".github/workflows/python.yml"
+      - "requirements.txt"
+      - "requirements-dev.txt"
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('**/requirements.txt', '**/requirements-dev.txt') }}
+          restore-keys: pip-
+
+      - name: Install Dependanices
+        run: |
+          pip install --upgrade pip wheel
+          pip install -r requirements-dev.txt
+
+#      - name: Lint
+#        run: make lint
+
+      - name: Test
+        run: make test
+
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "car-api-dev" #Must be unique in Heroku
+          heroku_email: "carapi@cyberjake.xyz"
