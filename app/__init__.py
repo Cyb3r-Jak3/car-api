@@ -6,8 +6,7 @@ from .models import db, RangeModel, ChargingModel, TripModel
 
 app = Flask(__name__)
 
-TEST_DB = "postgresql://ffzhzfvhpgqvrk:ebb7da41dc00e411bfa74c4e7e19f382e0a47a369718e64d9735e1a777b5b4d0@ec2-34-197-84-74.compute-1.amazonaws.com:5432/d6h0tfe7i6l7e"
-db_uri = os.getenv("DATABASE_URL", TEST_DB)
+db_uri = os.getenv("DATABASE_URL")
 if db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 
