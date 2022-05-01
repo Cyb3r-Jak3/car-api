@@ -13,7 +13,7 @@ on:
       - "v*"
 
 jobs:
-  build:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -39,9 +39,12 @@ jobs:
 
       - name: Test
         run: make test
-
+  Deploy:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    needs: Test
+    steps:
       - uses: akhileshns/heroku-deploy@v3.12.12
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "car-api-dev" #Must be unique in Heroku
