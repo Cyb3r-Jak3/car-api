@@ -1,0 +1,22 @@
+Index page with three inputs forms.
+1. Range which has battery percentage and miles th
+2. Trip end which has miles, kWh, and time
+3. Charge which is time and percentage
+
+
+Tables
+
+Range
+    Battery Percentage: INT
+    Range: INT
+
+Charging
+
+    Time: TIME Duration
+    Amount: FLOAT
+
+Trip
+    Destination: STRING
+    Miles: FLOAT
+    kwh: FLOAT
+    Time: TIME Duration
