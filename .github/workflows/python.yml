@@ -13,7 +13,7 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
-    container: python-3.10.4-bullseye
+    container: python:3.10.4-bullseye
     services:
       postgres:
         image: postgres:14.2
