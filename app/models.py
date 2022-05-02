@@ -21,7 +21,7 @@ class RangeModel(db.Model):
 
     def __repr__(self):
         return (
-            f"Battery Percentage: {self.percentage} Battery Range: {self.battery_range}"
+            f"Battery Percentage: {self.percentage}% Battery Range: {self.battery_range} miles"
         )
 
 
@@ -40,7 +40,7 @@ class ChargingModel(db.Model):
         self.charge_amount = charge_amount
 
     def __repr__(self):
-        return f"Charge Time: {self.time} Charge Amount: {self.amount}"
+        return f"Charge Time: {self.charge_time} Charge Amount: {self.charge_amount} kWh"
 
 
 class TripModel(db.Model):
