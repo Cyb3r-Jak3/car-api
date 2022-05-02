@@ -13,13 +13,25 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
+    container: python-3.10.4-bullseye
+    services:
+      postgres:
+        image: postgres:14.2
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
+#      - name: Set up Python
+#        uses: actions/setup-python@v3
+#        with:
+#          python-version: "3.10"
 
       - uses: actions/cache@v3
         with:
@@ -36,4 +48,9 @@ jobs:
 #        run: make lint
 
       - name: Test
-        run: make test
+        run: |
+          flask db init
+          flask db upgrade
+          make test
+        env:
+          DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
