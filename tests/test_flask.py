@@ -14,11 +14,6 @@ def test_index(client):
     assert resp.status_code == 200
 
 
-def test_range(client):
-    resp = client.get("/range")
-    assert resp.status_code == 200
-
-
 def test_bad_range(client):
     resp = client.post(
         "/api/submit",
@@ -106,3 +101,8 @@ def test_bad_charge(client):
     )
     assert resp.status_code == 400
     # assert resp.json["success"] is False
+
+
+def test_range(client):
+    resp = client.get("/range")
+    assert resp.status_code == 200
