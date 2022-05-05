@@ -1,4 +1,4 @@
-FROM ghcr.io/cyb3r-jak3/pypy-flask:slim-2.1.1-20.1.0-21.12.0 as base
+FROM ghcr.io/cyb3r-jak3/pypy-flask:slim-2.1.2-20.1.0-21.12.0 as base
 
 RUN apt update && \
     apt -y install gcc libpq-dev build-essential

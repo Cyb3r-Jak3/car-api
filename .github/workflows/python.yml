@@ -13,7 +13,6 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
-#    container: python:3.10.4-bullseye
     services:
       postgres:
         image: postgres:14.2
@@ -49,6 +48,7 @@ jobs:
 
       - name: Test
         run: |
+          python3 .github/reset_db.py
           flask db upgrade
           make test
         env:
