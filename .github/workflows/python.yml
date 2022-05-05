@@ -48,7 +48,7 @@ jobs:
 
       - name: Test
         run: |
-          python3 .github/reset_db.py
+          psql -Atx $DATABASE_URL -c "DROP range_table charging_table trip_table"
           flask db upgrade
           make test
         env:
