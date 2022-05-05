@@ -1,4 +1,4 @@
-from app.models import ChargingModel, TripModel, RangeModel
+from .models import ChargingModel, TripModel, RangeModel
 
 
 def test_charge_model():

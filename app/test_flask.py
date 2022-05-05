@@ -1,7 +1,5 @@
-import os
-
 import pytest
-from app import app
+from . import app
 
 
 @pytest.fixture
