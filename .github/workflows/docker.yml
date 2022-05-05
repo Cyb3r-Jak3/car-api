@@ -42,7 +42,7 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=sha
         labels: |
-          org.label-schema.vcs-url=https://github.com/Cyb3r-Jak3/HAR_Analyzer.git
+          org.label-schema.vcs-url=https://github.com/Cyb3r-Jak3/car-api.git
           org.label-schema.schema-version=1.0.0-rc1
 
     - name: Build and Push
