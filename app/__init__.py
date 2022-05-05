@@ -1,12 +1,17 @@
 """Main App"""
 import os
+
 from flask import Flask, render_template, request, jsonify
 from flask_migrate import Migrate
 from .models import db, RangeModel, ChargingModel, TripModel
 
+import plotly.express as px
+import json
+import plotly
+
 app = Flask(__name__)
 
-db_uri = os.getenv("DATABASE_URL")
+db_uri = os.environ["DATABASE_URL"]
 if db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 
@@ -34,7 +39,7 @@ def action_endpoint():
     """
     form = request.form
     # Handle battery + range fields
-    if any([form["BatteryPercentage"] or form["BatteryRange"]]):
+    if any([form.get("BatteryPercentage") or form.get("BatteryRange")]):
         battery_percentage = form["BatteryPercentage"]
         battery_range = form["BatteryRange"]
         if all([battery_percentage, battery_range]):
@@ -54,8 +59,8 @@ def action_endpoint():
                 400,
             )
 
-    # Handle post trip info
-    if any([form["miles"], form["kwh"], form["time"], form["destination"]]):
+    # Handle trip info
+    if any([form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]):
         miles = form["miles"]
         kwh = form["kwh"]
         trip_time = form["time"]
@@ -78,7 +83,7 @@ def action_endpoint():
             )
 
     # Handle charging submission
-    if any([form["ChargeTime"] or form["ChargeAmount"]]):
+    if any([form.get("ChargeTime") or form.get("ChargeAmount")]):
         charge_time = form["ChargeTime"]
         charge_amount = form["ChargeAmount"]
         if all([charge_amount, charge_time]):
@@ -98,7 +103,14 @@ def action_endpoint():
                 400,
             )
 
-    return jsonify({"success": True})
+    return jsonify({"success": True}), 200
+
+
+@app.route("/range")
+def charge_graph():
+    query = RangeModel.query.all()
+    fig = px.scatter(x=[point.percentage for point in query], y=[point.battery_range for point in query], trendline="ols", title="Range vs Battery Percentage")
+    return render_template('plotly.jinja', title="Range Graph", graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
 
 
 if __name__ == "__main__":
