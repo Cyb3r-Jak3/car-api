@@ -1,0 +1,57 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "app/**"
+      - ".github/workflows/docker.yml"
+      - "Dockerfile"
+    tags:
+      - "v*"
+
+jobs:
+  Docker:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Login To GitHub
+      uses: docker/login-action@v1
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.CR_PAT }}
+
+    - uses: actions/checkout@v3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1.2.0
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1.7.0
+
+    - name: Docker Meta
+      id: meta
+      uses: docker/metadata-action@v3.8.0
+      with:
+        images: ghcr.io/cyb3r-jak3/har_analyzer
+        tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+        labels: |
+          org.label-schema.vcs-url=https://github.com/Cyb3r-Jak3/HAR_Analyzer.git
+          org.label-schema.schema-version=1.0.0-rc1
+
+    - name: Build and Push
+      uses: docker/build-push-action@v3.0.0
+      with:
+        platforms: linux/amd64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        push: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        file: Dockerfile
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
