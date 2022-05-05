@@ -48,7 +48,7 @@ jobs:
 
       - name: Test
         run: |
-          psql -Atx $DATABASE_URL -c "DROP TABLE range_table charging_table trip_table"
+          psql -Atx $DATABASE_URL -c "DROP TABLE range_table, charging_table, trip_table"
           flask db upgrade
           make test
         env:
