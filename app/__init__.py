@@ -1,15 +1,19 @@
 """Main App"""
 import os
+import json
 
 from flask import Flask, render_template, request, jsonify
+from flask_basicauth import BasicAuth
 from flask_migrate import Migrate
-from .models import db, RangeModel, ChargingModel, TripModel
-
 import plotly.express as px
-import json
 import plotly
 
+from .models import db, RangeModel, ChargingModel, TripModel
+
 app = Flask(__name__)
+
+app.config['BASIC_AUTH_USERNAME'] = os.getenv("BASIC_AUTH_USER")
+app.config['BASIC_AUTH_PASSWORD'] = os.getenv("BASIC_AUTH_PASS")
 
 db_uri = os.environ["DATABASE_URL"]
 if db_uri.startswith("postgres://"):
@@ -20,9 +24,11 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
+basic_auth = BasicAuth(app)
 
 
 @app.route("/")
+@basic_auth.required
 def index():
     """
     Render Index Page
@@ -32,6 +38,7 @@ def index():
 
 
 @app.route("/api/submit", methods=["POST"])
+@basic_auth.required
 def action_endpoint():
     """
     Endpoint that handles form submission
@@ -107,6 +114,7 @@ def action_endpoint():
 
 
 @app.route("/range")
+@basic_auth.required
 def charge_graph():
     query = RangeModel.query.all()
     fig = px.scatter(x=[point.percentage for point in query], y=[point.battery_range for point in query], trendline="ols", title="Range vs Battery Percentage")

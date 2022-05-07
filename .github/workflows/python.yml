@@ -53,3 +53,5 @@ jobs:
           make test
         env:
           DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
+          BASIC_AUTH_USER: "user"
+          BASIC_AUTH_PASS: "password"
