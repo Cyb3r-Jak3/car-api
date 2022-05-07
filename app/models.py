@@ -1,13 +1,15 @@
+"""Database models"""
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import types
 
 db = SQLAlchemy()
 
 
-class RangeModel(db.Model):
+class RangeModel(db.Model):  # pylint: disable=too-few-public-methods
     """
     DB Model that represents range table
     """
+
     __tablename__ = "range_table"
 
     id = db.Column(types.Integer, primary_key=True)
@@ -20,15 +22,14 @@ class RangeModel(db.Model):
         self.percentage = percentage
 
     def __repr__(self):
-        return (
-            f"Battery Percentage: {self.percentage}% Battery Range: {self.battery_range} miles"
-        )
+        return f"Battery Percentage: {self.percentage}% Battery Range: {self.battery_range} miles"
 
 
-class ChargingModel(db.Model):
+class ChargingModel(db.Model):  # pylint: disable=too-few-public-methods
     """
     DB Model that represents a charge
     """
+
     __tablename__ = "charging_table"
 
     id = db.Column(types.Integer, primary_key=True)
@@ -40,13 +41,16 @@ class ChargingModel(db.Model):
         self.charge_amount = charge_amount
 
     def __repr__(self):
-        return f"Charge Time: {self.charge_time} Charge Amount: {self.charge_amount} kWh"
+        return (
+            f"Charge Time: {self.charge_time} Charge Amount: {self.charge_amount} kWh"
+        )
 
 
-class TripModel(db.Model):
+class TripModel(db.Model):  # pylint: disable=too-few-public-methods
     """
     DB Model that represents a trip
     """
+
     __tablename__ = "trip_table"
 
     id = db.Column(types.Integer, primary_key=True)
@@ -62,4 +66,7 @@ class TripModel(db.Model):
         self.destination = destination
 
     def __repr__(self):
-        return f"Trip {self.destination} was {self.miles} miles, took {self.trip_time}, average kWh {self.kwh}"
+        return (
+            f"Trip {self.destination} was {self.miles} miles, "
+            f"took {self.trip_time}, average kWh {self.kwh}"
+        )

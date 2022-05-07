@@ -10,20 +10,30 @@ import plotly
 
 from .models import db, RangeModel, ChargingModel, TripModel
 
-app = Flask(__name__)
 
-app.config['BASIC_AUTH_USERNAME'] = os.getenv("BASIC_AUTH_USER")
-app.config['BASIC_AUTH_PASSWORD'] = os.getenv("BASIC_AUTH_PASS")
+def create_app():
+    """
+    Returns a Flask App with settings
+    :return:
+    """
+    to_create = Flask(__name__)
+    to_create.secret_key = os.getenv("FLASK_SECRET_KEY", "INSECURE-KEY")
+    to_create.config["BASIC_AUTH_USERNAME"] = os.getenv("BASIC_AUTH_USER")
+    to_create.config["BASIC_AUTH_PASSWORD"] = os.getenv("BASIC_AUTH_PASS")
 
-db_uri = os.environ["DATABASE_URL"]
-if db_uri.startswith("postgres://"):
-    db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+    db_uri = os.environ["DATABASE_URL"]
+    if db_uri.startswith("postgres://"):
+        db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    to_create.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    to_create.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db.init_app(app)
-migrate = Migrate(app, db)
+    db.init_app(to_create)
+    Migrate(to_create, db)
+    return to_create
+
+
+app = create_app()
 basic_auth = BasicAuth(app)
 
 
@@ -67,7 +77,9 @@ def action_endpoint():
             )
 
     # Handle trip info
-    if any([form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]):
+    if any(
+        [form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]
+    ):
         miles = form["miles"]
         kwh = form["kwh"]
         trip_time = form["time"]
@@ -116,9 +128,21 @@ def action_endpoint():
 @app.route("/range")
 @basic_auth.required
 def charge_graph():
+    """
+    Endpoint to show a graph of battery percentage vs battery range
+    """
     query = RangeModel.query.all()
-    fig = px.scatter(x=[point.percentage for point in query], y=[point.battery_range for point in query], trendline="ols", title="Range vs Battery Percentage")
-    return render_template('plotly.jinja', title="Range Graph", graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
+    fig = px.scatter(
+        x=[point.percentage for point in query],
+        y=[point.battery_range for point in query],
+        trendline="ols",
+        title="Range vs Battery Percentage",
+    )
+    return render_template(
+        "plotly.jinja",
+        title="Range Graph",
+        graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
+    )
 
 
 if __name__ == "__main__":
