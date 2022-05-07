@@ -33,7 +33,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v3.8.0
       with:
-        images: ghcr.io/cyb3r-jak3/har_analyzer
+        images: ghcr.io/cyb3r-jak3/car-api
         tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
