@@ -125,3 +125,20 @@ def test_bad_charge(client):
 def test_range(client):
     resp = client.get("/range", headers=auth_headers)
     assert resp.status_code == 200
+
+
+def test_range_no_auth():
+    resp = app.test_client().get("/range")
+    assert resp.status_code == 401
+    assert "WWW-Authenticate" in resp.headers
+
+
+def test_trips(client):
+    resp = client.get("/trips", headers=auth_headers)
+    assert resp.status_code == 200
+
+
+def test_trips_no_auth():
+    resp = app.test_client().get("/trips")
+    assert resp.status_code == 401
+    assert "WWW-Authenticate" in resp.headers
