@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_basicauth import BasicAuth
 from flask_migrate import Migrate
 import plotly.express as px
+import plotly.graph_objects as go
 import plotly
 
 from .models import db, RangeModel, ChargingModel, TripModel
@@ -127,7 +128,7 @@ def action_endpoint():
 
 @app.route("/range")
 @basic_auth.required
-def charge_graph():
+def range_graph():
     """
     Endpoint to show a graph of battery percentage vs battery range
     """
@@ -138,9 +139,40 @@ def charge_graph():
         trendline="ols",
         title="Range vs Battery Percentage",
     )
+    fig.update_layout(
+        xaxis_title="Estimated Miles",
+        yaxis_title="Battery Percentage",
+    )
     return render_template(
         "plotly.jinja",
         title="Range Graph",
+        graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
+    )
+
+
+@app.route("/trips")
+@basic_auth.required
+def trip_graph():
+    """
+    Endpoint to show a table of trips
+    """
+    trip_data = TripModel.query.all()
+    fig = go.Figure(
+        data=go.Table(
+            header=dict(values=["Miles", "Average kWh", "Trip Time", "Destination"]),
+            cells=dict(
+                values=[
+                    [trip.miles for trip in trip_data],
+                    [trip.kwh for trip in trip_data],
+                    [str(trip.trip_time) for trip in trip_data],
+                    [trip.destination for trip in trip_data],
+                ]
+            ),
+        )
+    )
+    return render_template(
+        "plotly.jinja",
+        title="Trip Graph",
         graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
     )
 
