@@ -1,7 +1,7 @@
 FROM ghcr.io/cyb3r-jak3/pypy-flask:slim-2.1.2-20.1.0-21.12.0 as base
 
 RUN apt update && \
-    apt -y install gcc libpq-dev build-essential
+    apt -y install gcc libpq-dev build-essential libblas3 liblapack3 liblapack-dev libblas-dev gfortran libatlas-base-dev
 
 RUN pip install --upgrade cython
 
