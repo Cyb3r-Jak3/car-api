@@ -85,7 +85,7 @@ def action_endpoint():
         kwh = form["kwh"]
         trip_time = form["time"]
         destination = form["destination"]
-        if all([miles, kwh, trip_time, destination]):
+        if all([miles, kwh, trip_time]):
             new_record = TripModel(
                 miles=miles, kwh=kwh, trip_time=trip_time, destination=destination
             )
