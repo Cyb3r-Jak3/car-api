@@ -96,7 +96,7 @@ def action_endpoint():
                 jsonify(
                     {
                         "success": False,
-                        "error": "Need all miles, kwh, destination and time filled out",
+                        "error": "Need all miles, kwh, and time filled out",
                     }
                 ),
                 400,

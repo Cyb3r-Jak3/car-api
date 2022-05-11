@@ -1,14 +1,54 @@
 import base64
 import pytest
+import os
 from app import app
+from flask.testing import FlaskClient
 
-auth_headers = {'Authorization': 'Basic ' + base64.b64encode(b"user:password").decode("utf-8")}
-app.testing = True
+
+class TestClient(FlaskClient):
+    def __init__(self):
+        self.auth_headers = {
+            "Authorization": "Basic "
+            + base64.b64encode(
+                f"{os.environ['BASIC_AUTH_USER']}:{os.environ['BASIC_AUTH_PASS']}".encode(
+                    "utf-8"
+                )
+            ).decode("utf-8")
+        }
+        self.api_link = "/api/submit"
+        self.form = {
+            "BatteryRange": "",
+            "BatteryPercentage": "",
+            "miles": "",
+            "kwh": "",
+            "time": "",
+            "destination": "",
+            "ChargeTime": "",
+            "ChargeAmount": "",
+        }
+        self.application = app
+        self.application.testing = True
+        super().__init__(application=self.application)
+
+    def submit_form(self, URL: str = "/", form_args: dict = None):
+        return self.post(
+            URL,
+            data={key: form_args.get(key, val) for key, val in self.form.items()},
+            headers=self.auth_headers
+        )
+
+    def authed_get(self, URL: str = "/", *args, **kwargs):
+        return self.get(
+            URL,
+            headers=self.auth_headers,
+            *args,
+            **kwargs
+        )
 
 
 @pytest.fixture
 def client():
-    return app.test_client()
+    return TestClient()
 
 
 def test_no_auth():
@@ -18,112 +58,99 @@ def test_no_auth():
 
 
 def test_index(client):
-    resp = client.get("/", headers=auth_headers)
+    resp = client.authed_get()
     assert resp.status_code == 200
 
 
 def test_bad_range(client):
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"BatteryPercentage": 100},
-        headers=auth_headers
+        form_args={"BatteryPercentage": 100, "BatteryRange": ""},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"BatteryRange": 100},
-        headers=auth_headers
+        form_args={"BatteryRange": 100, "BatteryPercentage": ""},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
 
 def test_good_range(client):
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"BatteryPercentage": 100, "BatteryRange": 100},
-        headers=auth_headers
+        form_args={"BatteryPercentage": 100, "BatteryRange": 100},
     )
     assert resp.status_code == 200
-    # assert resp.json["success"]
+    assert resp.json["success"]
 
 
 def test_good_trip(client):
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"miles": 10, "kwh": 3.5, "time": "0:15", "destination": "Flask Test"},
-        headers=auth_headers
+        form_args={"miles": 10, "kwh": 3.5, "time": "0:15", "destination": "Flask Test"},
     )
     assert resp.status_code == 200
-    # assert resp.json["success"]
+    assert resp.json["success"]
 
 
 def test_bad_trip(client):
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"kwh": 3.5, "time": "0:15", "destination": "Flask Test"},
-        headers=auth_headers
+        form_args={"kwh": 3.5, "time": "0:15", "destination": "Flask Test"},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"miles": 10, "time": "0:15", "destination": "Flask Test"},
-        headers=auth_headers
+        form_args={"miles": 10, "time": "0:15", "destination": "Flask Test"},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"miles": 10, "kwh": 3.5, "destination": "Flask Test"},
-        headers=auth_headers
+        form_args={"miles": 10, "kwh": 3.5, "destination": "Flask Test"},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"miles": 10, "kwh": 3.5, "time": "0:15"},
-        headers=auth_headers
+        form_args={"miles": 10, "kwh": 3.5, "time": "0:15"},
     )
     assert resp.status_code == 200
-    # assert resp.json["success"] is False
+    assert resp.json["success"]
 
 
 def test_good_charge(client):
-    resp = client.post(
+    resp = client.submit_form(
         "/api/submit",
-        data={"ChargeTime": "1:15:00", "ChargeAmount": 11.78},
-        headers=auth_headers
+        form_args={"ChargeTime": "1:15:00", "ChargeAmount": 11.78},
     )
     assert resp.status_code == 200
-    # assert resp.json["success"]
+    assert resp.json["success"]
 
 
 def test_bad_charge(client):
-    resp = client.post(
-        "/api/submit",
-        data={"ChargeAmount": 11.78},
-        headers=auth_headers
+    resp = client.submit_form(
+        "/api/submit", form_args={"ChargeAmount": 11.78},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
-    resp = client.post(
-        "/api/submit",
-        data={"ChargeTime": "1:15:00"},
-        headers=auth_headers
+    resp = client.submit_form(
+        "/api/submit", form_args={"ChargeTime": "1:15:00"},
     )
     assert resp.status_code == 400
-    # assert resp.json["success"] is False
+    assert resp.json["success"] is False
 
 
 def test_range(client):
-    resp = client.get("/range", headers=auth_headers)
+    resp = client.authed_get("/range")
     assert resp.status_code == 200
 
 
@@ -134,7 +161,7 @@ def test_range_no_auth():
 
 
 def test_trips(client):
-    resp = client.get("/trips", headers=auth_headers)
+    resp = client.authed_get("/trips",)
     assert resp.status_code == 200
 
 
