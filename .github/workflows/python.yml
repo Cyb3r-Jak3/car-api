@@ -51,17 +51,18 @@ jobs:
       - name: Test
         run: |
           flask db upgrade
-          python -m pytest -vv
+          python -m pytest -vv --cov
+          coverage report
         env:
           DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
           BASIC_AUTH_USER: "user"
           BASIC_AUTH_PASS: "password"
-
-      - name: Test
-        run: |
-          flask db upgrade
-          make test
-        env:
-          DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
-          BASIC_AUTH_USER: "user"
-          BASIC_AUTH_PASS: "password"
+#
+#      - name: Test
+#        run: |
+#          flask db upgrade
+#          make test
+#        env:
+#          DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
+#          BASIC_AUTH_USER: "user"
+#          BASIC_AUTH_PASS: "password"
