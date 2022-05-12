@@ -52,17 +52,13 @@ jobs:
         run: |
           flask db upgrade
           make test
-          coverage report
+          coverage xml
         env:
           DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
           BASIC_AUTH_USER: "user"
           BASIC_AUTH_PASS: "password"
-#
-#      - name: Test
-#        run: |
-#          flask db upgrade
-#          make test
-#        env:
-#          DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
-#          BASIC_AUTH_USER: "user"
-#          BASIC_AUTH_PASS: "password"
+
+      - name: Report Code Coverage
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          fail_ci_if_error: true

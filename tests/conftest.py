@@ -4,6 +4,7 @@ import os
 import pytest
 from flask.testing import FlaskClient
 from dotenv import load_dotenv
+# Needs to be loaded before app for local testing using an .env file
 load_dotenv()
 from app import app
 
