@@ -81,7 +81,7 @@ def action_endpoint():
 
     # Handle trip info
     if any(
-            [form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]
+        [form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]
     ):
         miles = form["miles"]
         kwh = form["kwh"]
