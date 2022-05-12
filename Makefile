@@ -11,4 +11,4 @@ format:
 	black app
 
 test:
-	pytest --cov -v
+	python -m pytest --cov -v

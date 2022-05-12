@@ -1,13 +1,15 @@
 """Main App"""
 import os
+
 import json
 
 from flask import Flask, render_template, request, jsonify
-from flask_basicauth import BasicAuth
-from flask_migrate import Migrate
+
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly
+from flask_basicauth import BasicAuth
+from flask_migrate import Migrate
 
 from .models import db, RangeModel, ChargingModel, TripModel
 
@@ -17,29 +19,29 @@ def create_app():
     Returns a Flask App with settings
     :return:
     """
-    to_create = Flask(__name__)
-    to_create.secret_key = os.getenv("FLASK_SECRET_KEY", "INSECURE-KEY")
-    to_create.config["BASIC_AUTH_USERNAME"] = os.getenv("BASIC_AUTH_USER")
-    to_create.config["BASIC_AUTH_PASSWORD"] = os.getenv("BASIC_AUTH_PASS")
+    created = Flask(__name__)
+    created.secret_key = os.getenv("FLASK_SECRET_KEY", "INSECURE-KEY")
+    created.config["BASIC_AUTH_USERNAME"] = os.getenv("BASIC_AUTH_USER")
+    created.config["BASIC_AUTH_PASSWORD"] = os.getenv("BASIC_AUTH_PASS")
 
     db_uri = os.environ["DATABASE_URL"]
     if db_uri.startswith("postgres://"):
         db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 
-    to_create.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-    to_create.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    created.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    created.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    db.init_app(to_create)
-    Migrate(to_create, db)
-    return to_create
+    db.init_app(created)
+    Migrate(created, db)
+    created.auth = BasicAuth(created)
+    return created
 
 
 app = create_app()
-basic_auth = BasicAuth(app)
 
 
 @app.route("/")
-@basic_auth.required
+@app.auth.required
 def index():
     """
     Render Index Page
@@ -49,7 +51,7 @@ def index():
 
 
 @app.route("/api/submit", methods=["POST"])
-@basic_auth.required
+@app.auth.required
 def action_endpoint():
     """
     Endpoint that handles form submission
@@ -79,7 +81,7 @@ def action_endpoint():
 
     # Handle trip info
     if any(
-        [form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]
+            [form.get("miles"), form.get("kwh"), form.get("time"), form.get("destination")]
     ):
         miles = form["miles"]
         kwh = form["kwh"]
@@ -127,7 +129,7 @@ def action_endpoint():
 
 
 @app.route("/range")
-@basic_auth.required
+@app.auth.required
 def range_graph():
     """
     Endpoint to show a graph of battery percentage vs battery range
@@ -151,7 +153,7 @@ def range_graph():
 
 
 @app.route("/trips")
-@basic_auth.required
+@app.auth.required
 def trip_graph():
     """
     Endpoint to show a table of trips
@@ -177,5 +179,5 @@ def trip_graph():
     )
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: nocover
     app.run()

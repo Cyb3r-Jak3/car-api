@@ -51,7 +51,7 @@ jobs:
       - name: Test
         run: |
           flask db upgrade
-          python -m pytest -vv --cov
+          make test
           coverage report
         env:
           DATABASE_URL: "postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres"
