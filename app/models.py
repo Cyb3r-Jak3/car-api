@@ -66,7 +66,9 @@ class TripModel(db.Model):  # pylint: disable=too-few-public-methods
     destination = db.Column(types.Text)
     submit_time = db.Column(types.DateTime)
 
-    def __init__(self, miles, kwh, trip_time, destination, submit_time):
+    def __init__(
+        self, miles, kwh, trip_time, destination, submit_time
+    ):  # pylint: disable=too-many-arguments
         self.miles = miles
         self.kwh = kwh
         self.trip_time = trip_time
