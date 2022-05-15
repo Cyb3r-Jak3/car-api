@@ -20,22 +20,22 @@
             <div class="row">
                 <div class="col-md-6 buffer">
                     <label for="BatteryPercentage">Battery Percentage</label>
-                    <input type="text" class="form-control" placeholder="100" id="BatteryPercentage" name="BatteryPercentage">
+                    <input type="number" step="any" class="form-control" placeholder="100" id="BatteryPercentage" name="BatteryPercentage">
                 </div>
 
                 <div class="col-md-6 buffer">
                     <label for=BatteryRange">Range</label>
-                    <input type="text" class="form-control" placeholder="270" id=BatteryRange" name="BatteryRange">
+                    <input type="number" step="any" class="form-control" placeholder="270" id=BatteryRange" name="BatteryRange">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3 buffer">
                     <label for="miles">Trip Miles</label>
-                    <input type="text" class="form-control" placeholder="0" id="miles" name="miles">
+                    <input type="number" step="any" class="form-control" placeholder="0" id="miles" name="miles">
                 </div>
                 <div class="col-md-3 buffer">
                     <label for=kwh">Average kWh</label>
-                    <input type="text" class="form-control" placeholder="4.0" id=kwh" name="kwh">
+                    <input type="number" step="any" class="form-control" placeholder="4.0" id=kwh" name="kwh">
                 </div>
                 <div class="col-md-3 buffer">
                     <label for="time">Trip Time</label>
@@ -49,11 +49,11 @@
             <div class="row">
                 <div class="col-md-6 buffer">
                     <label for="ChargeTime">Timing Charging</label>
-                    <input type="text" class="form-control" id="ChargeTime" placeholder="00:00" name="ChargeTime">
+                    <input type="number" step="any" class="form-control" id="ChargeTime" placeholder="00:00" name="ChargeTime">
                 </div>
                 <div class="col-md-6 buffer">
                     <label for="ChargeAmount">Amount Charged</label>
-                    <input type="text" class="form-control" id="ChargeAmount" placeholder="0.0" name="ChargeAmount">
+                    <input type="number" step="any" class="form-control" id="ChargeAmount" placeholder="0.0" name="ChargeAmount">
                 </div>
             </div>
             <input type="submit" class="form-control" name="Submit" value="Submit">
