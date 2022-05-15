@@ -64,7 +64,9 @@ def action_endpoint():
         battery_range = form["BatteryRange"]
         if all([battery_percentage, battery_range]):
             new_record = RangeModel(
-                battery_range=battery_range, percentage=battery_percentage, submit_time=datetime.utcnow()
+                battery_range=battery_range,
+                percentage=battery_percentage,
+                submit_time=datetime.utcnow(),
             )
             db.session.add(new_record)
             db.session.commit()
@@ -89,7 +91,11 @@ def action_endpoint():
         destination = form["destination"]
         if all([miles, kwh, trip_time]):
             new_record = TripModel(
-                miles=miles, kwh=kwh, trip_time=trip_time, destination=destination, submit_time=datetime.utcnow()
+                miles=miles,
+                kwh=kwh,
+                trip_time=trip_time,
+                destination=destination,
+                submit_time=datetime.utcnow(),
             )
             db.session.add(new_record)
             db.session.commit()
@@ -110,7 +116,9 @@ def action_endpoint():
         charge_amount = form["ChargeAmount"]
         if all([charge_amount, charge_time]):
             new_record = ChargingModel(
-                charge_time=charge_time, charge_amount=charge_amount, submit_time=datetime.utcnow()
+                charge_time=charge_time,
+                charge_amount=charge_amount,
+                submit_time=datetime.utcnow(),
             )
             db.session.add(new_record)
             db.session.commit()
