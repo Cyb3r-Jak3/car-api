@@ -143,20 +143,16 @@ def range_graph():
     """
     Endpoint to show a graph of battery percentage vs battery range
     """
-    df = pandas.read_sql_query(
-        db.select([RangeModel.battery_range, RangeModel.percentage]),
-        con=db.engine
-    )
+    # df =
     fig = px.scatter(
-        data_frame=df,
+        data_frame=pandas.read_sql_query(
+            db.select([RangeModel.battery_range, RangeModel.percentage]), con=db.engine
+        ),
         x="battery_range",
         y="percentage",
         trendline="ols",
         title="Range vs Battery Percentage",
-        labels={
-            "x": "Estimate Range",
-            "y": "Battery Range"
-        },
+        labels={"x": "Estimate Range", "y": "Battery Range"},
     )
 
     fig.update_layout(
