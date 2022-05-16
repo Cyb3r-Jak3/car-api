@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 import json
 
+import pandas
 from flask import Flask, render_template, request, jsonify
 
 import plotly.express as px
@@ -142,13 +143,22 @@ def range_graph():
     """
     Endpoint to show a graph of battery percentage vs battery range
     """
-    query = RangeModel.query.all()
+    df = pandas.read_sql_query(
+        db.select([RangeModel.battery_range, RangeModel.percentage]),
+        con=db.engine
+    )
     fig = px.scatter(
-        x=[point.battery_range for point in query],
-        y=[point.percentage for point in query],
+        data_frame=df,
+        x="battery_range",
+        y="percentage",
         trendline="ols",
         title="Range vs Battery Percentage",
+        labels={
+            "x": "Estimate Range",
+            "y": "Battery Range"
+        },
     )
+
     fig.update_layout(
         xaxis_title="Estimated Miles",
         yaxis_title="Battery Percentage",
