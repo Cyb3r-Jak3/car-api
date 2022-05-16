@@ -144,8 +144,8 @@ def range_graph():
     """
     query = RangeModel.query.all()
     fig = px.scatter(
-        x=[point.percentage for point in query],
-        y=[point.battery_range for point in query],
+        x=[point.battery_range for point in query],
+        y=[point.percentage for point in query],
         trendline="ols",
         title="Range vs Battery Percentage",
     )
