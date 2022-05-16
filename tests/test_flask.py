@@ -12,22 +12,6 @@ def test_index(client):
     assert resp.status_code == 200
 
 
-def test_bad_range(client):
-    resp = client.submit_form(
-        "/api/submit",
-        form_args={"BatteryPercentage": 100, "BatteryRange": ""},
-    )
-    assert resp.status_code == 400
-    assert resp.json["success"] is False
-
-    resp = client.submit_form(
-        "/api/submit",
-        form_args={"BatteryRange": 100, "BatteryPercentage": ""},
-    )
-    assert resp.status_code == 400
-    assert resp.json["success"] is False
-
-
 def test_good_range(client):
     resp = client.submit_form(
         "/api/submit",
@@ -35,6 +19,24 @@ def test_good_range(client):
     )
     assert resp.status_code == 200
     assert resp.json["success"]
+
+
+def test_bad_range(client):
+    resp = client.submit_form(
+        "/api/submit",
+        form_args={"BatteryPercentage": 100, "BatteryRange": ""},
+    )
+    assert resp.status_code == 400
+    assert resp.json["success"] is False
+    assert resp.json["error"] == "Need both battery percentage and battery range"
+
+    resp = client.submit_form(
+        "/api/submit",
+        form_args={"BatteryRange": 100, "BatteryPercentage": ""},
+    )
+    assert resp.status_code == 400
+    assert resp.json["success"] is False
+    assert resp.json["error"] == "Need both battery percentage and battery range"
 
 
 def test_good_trip(client):
@@ -53,6 +55,7 @@ def test_bad_trip(client):
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
+    assert resp.json["error"] == "Need all miles, kwh, and time filled out"
 
     resp = client.submit_form(
         "/api/submit",
@@ -60,6 +63,7 @@ def test_bad_trip(client):
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
+    assert resp.json["error"] == "Need all miles, kwh, and time filled out"
 
     resp = client.submit_form(
         "/api/submit",
@@ -67,6 +71,7 @@ def test_bad_trip(client):
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
+    assert resp.json["error"] == "Need all miles, kwh, and time filled out"
 
     resp = client.submit_form(
         "/api/submit",
@@ -91,12 +96,14 @@ def test_bad_charge(client):
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
+    assert resp.json["error"] == "Need both ChargeTime and ChargeAmount filled out"
 
     resp = client.submit_form(
         "/api/submit", form_args={"ChargeTime": "1:15:00"},
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
+    assert resp.json["error"] == "Need both ChargeTime and ChargeAmount filled out"
 
 
 def test_range(client):
