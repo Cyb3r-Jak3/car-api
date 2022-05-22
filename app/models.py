@@ -18,7 +18,7 @@ class RangeModel(db.Model):  # pylint: disable=too-few-public-methods
     percentage = db.Column(types.Integer)
     submit_time = db.Column(types.DateTime)
     trip_id = db.Column(db.Integer, db.ForeignKey("trip_table.id"), nullable=True)
-    trip = db.relationship('TripModel', backref=db.backref('charging_table', lazy=True))
+    trip = db.relationship("TripModel", backref=db.backref("charging_table", lazy=True))
 
     def __init__(self, battery_range, percentage, submit_time, trip=None):
         self.battery_range = battery_range

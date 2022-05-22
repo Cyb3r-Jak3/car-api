@@ -28,5 +28,5 @@ def test_range_model():
 
 def test_range_with_trip():
     trip = TripModel(miles=1.5, kwh=3.4, trip_time="0:15", destination="RangeTest", submit_time=datetime.utcnow())
-    range = RangeModel(battery_range=100, percentage=80, submit_time=datetime.utcnow(), trip=trip)
-    assert range.trip == trip
+    range_model = RangeModel(battery_range=100, percentage=80, submit_time=datetime.utcnow(), trip=trip)
+    assert range_model.trip == trip
