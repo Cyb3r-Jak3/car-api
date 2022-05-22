@@ -24,3 +24,9 @@ def test_range_model():
     assert record.battery_range == 200
     assert record.percentage == 60
     assert repr(record) == "Battery Percentage: 60% Battery Range: 200 miles"
+
+
+def test_range_with_trip():
+    trip = TripModel(miles=1.5, kwh=3.4, trip_time="0:15", destination="RangeTest", submit_time=datetime.utcnow())
+    range = RangeModel(battery_range=100, percentage=80, submit_time=datetime.utcnow(), trip=trip)
+    assert range.trip == trip
