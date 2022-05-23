@@ -58,6 +58,7 @@ def action_endpoint():
     Endpoint that handles form submission
     :return:
     """
+    date = datetime.utcnow()
     form = request.form
     # Handle battery + range fields
     if any([form.get("BatteryPercentage") or form.get("BatteryRange")]):
@@ -67,7 +68,7 @@ def action_endpoint():
             new_record = RangeModel(
                 battery_range=battery_range,
                 percentage=battery_percentage,
-                submit_time=datetime.utcnow(),
+                submit_time=date,
             )
             db.session.add(new_record)
             db.session.commit()
@@ -96,7 +97,7 @@ def action_endpoint():
                 kwh=kwh,
                 trip_time=trip_time,
                 destination=destination,
-                submit_time=datetime.utcnow(),
+                submit_time=date,
             )
             db.session.add(new_record)
             db.session.commit()
@@ -119,7 +120,7 @@ def action_endpoint():
             new_record = ChargingModel(
                 charge_time=charge_time,
                 charge_amount=charge_amount,
-                submit_time=datetime.utcnow(),
+                submit_time=date,
             )
             db.session.add(new_record)
             db.session.commit()
