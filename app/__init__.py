@@ -162,7 +162,7 @@ def range_graph():
     return render_template(
         "plotly.jinja",
         title="Range Graph",
-        graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
+        graphs=[json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)],
     )
 
 
@@ -189,7 +189,7 @@ def trip_graph():
     return render_template(
         "plotly.jinja",
         title="Trip Graph",
-        graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
+        graphs=[json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)],
     )
 
 

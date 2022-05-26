@@ -4,6 +4,7 @@ import os
 import pytest
 from flask.testing import FlaskClient
 from dotenv import load_dotenv
+
 # Needs to be loaded before app for local testing using an .env file
 load_dotenv()
 from app import app
@@ -39,16 +40,11 @@ class TestClient(FlaskClient):
         return self.post(
             URL,
             data={key: form_args.get(key, val) for key, val in self.form.items()},
-            headers=self.auth_headers
+            headers=self.auth_headers,
         )
 
     def authed_get(self, URL: str = "/", *args, **kwargs):
-        return self.get(
-            URL,
-            headers=self.auth_headers,
-            *args,
-            **kwargs
-        )
+        return self.get(URL, headers=self.auth_headers, *args, **kwargs)
 
 
 @pytest.fixture

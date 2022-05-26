@@ -17,14 +17,11 @@ class RangeModel(db.Model):  # pylint: disable=too-few-public-methods
     battery_range = db.Column(types.Integer)
     percentage = db.Column(types.Integer)
     submit_time = db.Column(types.DateTime)
-    trip_id = db.Column(db.Integer, db.ForeignKey("trip_table.id"), nullable=True)
-    trip = db.relationship("TripModel", backref=db.backref("charging_table", lazy=True))
 
-    def __init__(self, battery_range, percentage, submit_time, trip=None):
+    def __init__(self, battery_range, percentage, submit_time):
         self.battery_range = battery_range
         self.percentage = percentage
         self.submit_time = submit_time
-        self.trip = trip
 
     def __repr__(self):
         return f"Battery Percentage: {self.percentage}% Battery Range: {self.battery_range} miles"
@@ -68,15 +65,20 @@ class TripModel(db.Model):  # pylint: disable=too-few-public-methods
     trip_time = db.Column(types.Interval)
     destination = db.Column(types.Text)
     submit_time = db.Column(types.DateTime)
+    range_id = db.Column(db.Integer, db.ForeignKey("range_table.id"), nullable=True)
+    battery_range = db.relationship(
+        "RangeModel", backref=db.backref("range_table", lazy=True)
+    )
 
     def __init__(
-        self, miles, kwh, trip_time, destination, submit_time
+        self, miles, kwh, trip_time, destination, submit_time, battery_range=None
     ):  # pylint: disable=too-many-arguments
         self.miles = miles
         self.kwh = kwh
         self.trip_time = trip_time
         self.destination = destination
         self.submit_time = submit_time
+        self.battery_range = battery_range
 
     def __repr__(self):
         return (
