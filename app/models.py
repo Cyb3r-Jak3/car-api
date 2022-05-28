@@ -27,30 +27,6 @@ class RangeModel(db.Model):  # pylint: disable=too-few-public-methods
         return f"Battery Percentage: {self.percentage}% Battery Range: {self.battery_range} miles"
 
 
-class ChargingModel(db.Model):  # pylint: disable=too-few-public-methods
-    """
-    DB Model that represents a charge
-    """
-
-    __tablename__ = "charging_table"
-
-    id = db.Column(types.Integer, primary_key=True)
-
-    charge_time = db.Column(types.Interval)
-    charge_amount = db.Column(types.Float)
-    submit_time = db.Column(types.DateTime)
-
-    def __init__(self, charge_time, charge_amount, submit_time):
-        self.charge_time = charge_time
-        self.charge_amount = charge_amount
-        self.submit_time = submit_time
-
-    def __repr__(self):
-        return (
-            f"Charge Time: {self.charge_time} Charge Amount: {self.charge_amount} kWh"
-        )
-
-
 class TripModel(db.Model):  # pylint: disable=too-few-public-methods
     """
     DB Model that represents a trip
@@ -84,4 +60,28 @@ class TripModel(db.Model):  # pylint: disable=too-few-public-methods
         return (
             f"Trip {self.destination} was {self.miles} miles, "
             f"took {self.trip_time}, average kWh {self.kwh}"
+        )
+
+
+class ChargingModel(db.Model):  # pylint: disable=too-few-public-methods
+    """
+    DB Model that represents a charge
+    """
+
+    __tablename__ = "charging_table"
+
+    id = db.Column(types.Integer, primary_key=True)
+
+    charge_time = db.Column(types.Interval)
+    charge_amount = db.Column(types.Float)
+    submit_time = db.Column(types.DateTime)
+
+    def __init__(self, charge_time, charge_amount, submit_time):
+        self.charge_time = charge_time
+        self.charge_amount = charge_amount
+        self.submit_time = submit_time
+
+    def __repr__(self):
+        return (
+            f"Charge Time: {self.charge_time} Charge Amount: {self.charge_amount} kWh"
         )
