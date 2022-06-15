@@ -162,7 +162,7 @@ def range_graph():
     return render_template(
         "plotly.jinja",
         title="Range Graph",
-        graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
+        graphs=[json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)],
     )
 
 
@@ -172,16 +172,25 @@ def trip_graph():
     """
     Endpoint to show a table of trips
     """
-    trip_data = TripModel.query.all()
+    trip_data: list[TripModel] = TripModel.query.all()
     fig = go.Figure(
         data=go.Table(
-            header=dict(values=["Miles", "Average kWh", "Trip Time", "Destination"]),
+            header=dict(
+                values=[
+                    "Miles",
+                    "Average kWh",
+                    "Trip Time",
+                    "Destination",
+                    "Battery Range",
+                ]
+            ),
             cells=dict(
                 values=[
                     [trip.miles for trip in trip_data],
                     [trip.kwh for trip in trip_data],
                     [str(trip.trip_time) for trip in trip_data],
                     [trip.destination for trip in trip_data],
+                    [trip.battery_range for trip in trip_data],
                 ]
             ),
         )
@@ -189,7 +198,7 @@ def trip_graph():
     return render_template(
         "plotly.jinja",
         title="Trip Graph",
-        graphJSON=json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder),
+        graphs=[json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)],
     )
 
 

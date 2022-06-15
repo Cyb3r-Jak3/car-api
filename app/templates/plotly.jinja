@@ -9,11 +9,15 @@
 
 </head>
 <body>
-  <div id='chart' class='chart'></div>
-</body>
+{% for plot in graphs %}
+    <div id='chart_{{ loop.index }}' class='chart'></div>
 
-<script type='text/javascript'>
-    Plotly.newPlot('chart',{{graphJSON | safe}},{});
-</script>
+    <script type='text/javascript'>
+        Plotly.newPlot('chart_{{ loop.index }}',{{plot | safe}},{});
+    </script>
+{% endfor %}
+
+
+</body>
 
 </html>

@@ -47,7 +47,6 @@ jobs:
       - name: Lint
         run: make lint
 
-
       - name: Test
         run: |
           flask db upgrade

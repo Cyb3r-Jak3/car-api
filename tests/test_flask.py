@@ -42,7 +42,12 @@ def test_bad_range(client):
 def test_good_trip(client):
     resp = client.submit_form(
         "/api/submit",
-        form_args={"miles": 10, "kwh": 3.5, "time": "0:15", "destination": "Flask Test"},
+        form_args={
+            "miles": 10,
+            "kwh": 3.5,
+            "time": "0:15",
+            "destination": "Flask Test",
+        },
     )
     assert resp.status_code == 200
     assert resp.json["success"]
@@ -92,14 +97,16 @@ def test_good_charge(client):
 
 def test_bad_charge(client):
     resp = client.submit_form(
-        "/api/submit", form_args={"ChargeAmount": 11.78},
+        "/api/submit",
+        form_args={"ChargeAmount": 11.78},
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
     assert resp.json["error"] == "Need both ChargeTime and ChargeAmount filled out"
 
     resp = client.submit_form(
-        "/api/submit", form_args={"ChargeTime": "1:15:00"},
+        "/api/submit",
+        form_args={"ChargeTime": "1:15:00"},
     )
     assert resp.status_code == 400
     assert resp.json["success"] is False
@@ -118,7 +125,9 @@ def test_range_no_auth():
 
 
 def test_trips(client):
-    resp = client.authed_get("/trips",)
+    resp = client.authed_get(
+        "/trips",
+    )
     assert resp.status_code == 200
 
 
