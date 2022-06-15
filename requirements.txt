@@ -1,11 +1,11 @@
 Flask==2.1.2
-SQLAlchemy==1.4.36
+SQLAlchemy==1.4.37
 psycopg2==2.9.3
 Flask-Migrate==3.1.0
 Flask-BasicAuth==0.2.0
 
 # For graphing
-plotly==5.8.0
+plotly==5.8.2
 pandas==1.4.2
 statsmodels==0.13.2
 
