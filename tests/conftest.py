@@ -49,4 +49,4 @@ class TestClient(FlaskClient):
 
 @pytest.fixture
 def client():
-    return TestClient()
+    yield TestClient()
