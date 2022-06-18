@@ -9,9 +9,8 @@ from flask import Flask, render_template, request, jsonify
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly
-from flask_basicauth import BasicAuth
 from flask_migrate import Migrate
-
+from .auth import auth_needed
 from .models import db, RangeModel, ChargingModel, TripModel
 
 
@@ -34,7 +33,6 @@ def create_app():
 
     db.init_app(created)
     Migrate(created, db)
-    created.auth = BasicAuth(created)
     return created
 
 
@@ -42,7 +40,7 @@ app = create_app()
 
 
 @app.route("/")
-@app.auth.required
+@auth_needed
 def index():
     """
     Render Index Page
@@ -52,7 +50,7 @@ def index():
 
 
 @app.route("/api/submit", methods=["POST"])
-@app.auth.required
+@auth_needed
 def action_endpoint():
     """
     Endpoint that handles form submission
@@ -139,7 +137,7 @@ def action_endpoint():
 
 
 @app.route("/range")
-@app.auth.required
+@auth_needed
 def range_graph():
     """
     Endpoint to show a graph of battery percentage vs battery range
@@ -167,7 +165,7 @@ def range_graph():
 
 
 @app.route("/trips")
-@app.auth.required
+@auth_needed
 def trip_graph():
     """
     Endpoint to show a table of trips

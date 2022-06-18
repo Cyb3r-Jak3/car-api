@@ -1,3 +1,5 @@
+import os
+
 from app import app
 
 
@@ -133,5 +135,16 @@ def test_trips(client):
 
 def test_trips_no_auth():
     resp = app.test_client().get("/trips")
+    assert resp.status_code == 401
+    assert "WWW-Authenticate" in resp.headers
+
+
+def test_good_secret_header(client):
+    resp = client.get("/trips", headers={"X-SECRET-HEADER": os.getenv("SECRET_HEADER")})
+    assert resp.status_code == 200
+
+
+def test_bad_secret_header(client):
+    resp = client.get("/trips", headers={"X-SECRET-HEADER": "PLEASE FAIL"})
     assert resp.status_code == 401
     assert "WWW-Authenticate" in resp.headers
