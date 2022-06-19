@@ -2,13 +2,13 @@
 import os
 from datetime import datetime
 import json
-
 import pandas
 from flask import Flask, render_template, request, jsonify
 
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly
+import requests
 from flask_migrate import Migrate
 from flask_apscheduler import APScheduler
 from .auth import auth_needed
@@ -209,7 +209,22 @@ def keep_alive():  # pragma: no cover
     """
     Keep alive function. Makes the web dyno not sleep
     """
-    print("Keeping app alive")
+    resp = requests.get(f"https://{os.getenv('HEROKU_APP_NAME')}.herokuapp.com/")
+    assert resp.status_code == 401
+
+
+@app.route("/status")
+def status_endpoint():
+    """
+    Status reporting endpoint
+    :return:
+    """
+    return jsonify(
+        {
+            "Alive": True,
+            "ReleasedAt": os.getenv("HEROKU_RELEASE_CREATED_AT"),
+        }
+    )
 
 
 if __name__ == "__main__":  # pragma: nocover
