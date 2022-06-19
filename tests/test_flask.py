@@ -148,3 +148,9 @@ def test_bad_secret_header(client):
     resp = client.get("/trips", headers={"X-SECRET-HEADER": "PLEASE FAIL"})
     assert resp.status_code == 401
     assert "WWW-Authenticate" in resp.headers
+
+
+def test_status_endpoint(client):
+    resp = client.authed_get("/status")
+    assert resp.status_code == 200
+    assert resp.json["Alive"]

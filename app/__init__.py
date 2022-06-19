@@ -210,10 +210,12 @@ def keep_alive():  # pragma: no cover
     Keep alive function. Makes the web dyno not sleep
     """
     resp = requests.get(f"https://{os.getenv('HEROKU_APP_NAME')}.herokuapp.com/")
-    assert resp.status_code == 401
+    if resp.status_code != 401:
+        print("Did not get blocked by auth")
 
 
 @app.route("/status")
+@auth_needed
 def status_endpoint():
     """
     Status reporting endpoint
