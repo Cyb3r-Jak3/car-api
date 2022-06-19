@@ -10,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly
 from flask_migrate import Migrate
+from flask_apscheduler import APScheduler
 from .auth import auth_needed
 from .models import db, RangeModel, ChargingModel, TripModel
 
@@ -37,6 +38,9 @@ def create_app():
 
 
 app = create_app()
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 
 @app.route("/")
@@ -198,6 +202,14 @@ def trip_graph():
         title="Trip Graph",
         graphs=[json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)],
     )
+
+
+@scheduler.task("cron", id="keep-alive", minute="*/10")
+def keep_alive():  # pragma: no cover
+    """
+    Keep alive function. Makes the web dyno not sleep
+    """
+    print("Keeping app alive")
 
 
 if __name__ == "__main__":  # pragma: nocover
