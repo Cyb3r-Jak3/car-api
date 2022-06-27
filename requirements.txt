@@ -6,7 +6,7 @@ Flask-APScheduler==1.12.4
 requests==2.28.0
 # For graphing
 plotly==5.8.2
-pandas==1.4.2
+pandas==1.4.3
 statsmodels==0.13.2
 
 # Needed for Heroku Deployment
